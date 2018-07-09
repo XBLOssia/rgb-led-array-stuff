@@ -7,21 +7,18 @@ import random
 import RPi.GPIO as GPIO
 
 
-docstat = 'In'
+docstat = True
 
 def switchdocstate(channel):
     global docstat
     docstat = not(docstat)
+    global status
 
 swtch = 18
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(swtch, GPIO.IN, GPIO.PUD_UP)
+GPIO.setup(swtch,GPIO.IN, GPIO.PUD_UP)
 GPIO.add_event_detect(swtch, GPIO.BOTH, switchdocstate, 600)
-try:
-    while(True):
-        time.sleep(1)
-    except KeyboardInterrupt:
-        GPIO.cleanup()
+
 
 
 class RunText(EditBase):
@@ -29,10 +26,8 @@ class RunText(EditBase):
         super(RunText, self).__init__(*args, **kwargs)
 
     def Run(self):
-        if docstat == 'In':
-            status = 'Doc is IN'
-        if docstat == 'Out':
-            status = 'Doc is OUT'
+        
+        status = 'On'
 
         offscreenCanvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
@@ -43,25 +38,32 @@ class RunText(EditBase):
         textColor = graphics.Color(randomRed, randomBlue, randomGreen)
         pos = offscreenCanvas.width
         #myText = time.strftime ('%l:%M%p')#self.args["text"]
-        height = random.randint(10,32)
+        height = random.randint(10,22)
 
         while True:
+            statustext = status
             offscreenCanvas.Clear()
-            len = graphics.DrawText(offscreenCanvas, font, pos, height, textColor, time.strftime ('%l:%M %p %b %d')); graphics.DrawText(offscreenCanvas, font, pos, height+10, textColor, status)
+            len = graphics.DrawText(offscreenCanvas, font, pos, height, textColor, time.strftime ('%l:%M %p %b %d')); graphics.DrawText(offscreenCanvas, font, pos+10, height+10, textColor, statustext)
             pos -= 1
             if (pos + len < 0):
                 pos = offscreenCanvas.width
-                height = random.randint(10,32)
+                height = random.randint(10,22)
                 randomRed = random.randint(0,255)
                 randomBlue = random.randint(0,255)
                 randomGreen = random.randint(0,255)
                 textColor = graphics.Color(randomRed, randomBlue, randomGreen)
+                if docstat == True:
+                    status = 'Doc is IN'
+                if docstat == False:
+                    status = 'Doc is OUT'
+                statustext = status
 
             time.sleep(0.10)
             offscreenCanvas = self.matrix.SwapOnVSync(offscreenCanvas)
 
 
 # Main function
+                                                                                                                                        
 if __name__ == "__main__":
     parser = RunText()
     if (not parser.process()):
