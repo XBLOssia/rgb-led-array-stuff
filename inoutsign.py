@@ -6,10 +6,23 @@ import time
 import random
 import RPi.GPIO as GPIO
 
-cnl = 18
-GPIO.setmode(GPIO.BOARD)
 
 docstat = 'In':
+
+def switchdocstate(channel):
+    global docstat
+    docstat = not(docstat)
+
+swtch = 18
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(swtch, GPIO.IN, GPIO.PUD_UP)
+GPIO.add_event_detect(swtch, GPIO.BOTH, switchdocstate, 600)
+try:
+    while(True):
+        time.sleep(1)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+
 
 class RunText(EditBase):
     def __init__(self, *args, **kwargs):
