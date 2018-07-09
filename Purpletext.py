@@ -42,3 +42,6 @@ if __name__ == "__main__":
     parser = RunText()
     if (not parser.process()):
         parser.print_help()
+except KeyboardInterrupt:
+    GPIO.cleanup()
+    print('Exiting')
