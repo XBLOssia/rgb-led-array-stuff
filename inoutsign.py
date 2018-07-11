@@ -5,6 +5,7 @@ from rgbmatrix import graphics
 import time
 import random
 import RPi.GPIO as GPIO
+import emoji
 
 
 docstat = True
@@ -32,6 +33,8 @@ class RunText(EditBase):
         offscreenCanvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont("/home/pi/rgb-led-array-stuff/fonts/7x13.bdf")
+        fontTwo = graphics.Font()
+        fontTwo.LoadFont("/home/pi/rgb-led-array-stuff/fonts/8x13.bdf")
         randomRed = random.randint(0,255)
         randomBlue = random.randint(0,255)
         randomGreen = random.randint(0,255)
@@ -39,15 +42,16 @@ class RunText(EditBase):
         pos = offscreenCanvas.width
         #myText = time.strftime ('%l:%M%p')#self.args["text"]
         height = random.randint(10,22)
+        emojistr = emoji.emojize(':tada: :sunrise: :bird: :cat: :alien: :volcano: :sunset: :tada:', use_aliases=True)
 
         while True:
             statustext = status
             offscreenCanvas.Clear()
-            len = graphics.DrawText(offscreenCanvas, font, pos, height, textColor, time.strftime ('%l:%M %p %b %d')); graphics.DrawText(offscreenCanvas, font, pos+10, height+10, textColor, statustext)
+            len = graphics.DrawText(offscreenCanvas, font, pos, height, textColor, time.strftime ('%l:%M %p %b %d')); graphics.DrawText(offscreenCanvas, font, pos+10, height+10, textColor, statustext); graphics.DrawText(offscreenCanvas, fontTwo, pos, height+20, textColor, emojistr)
             pos -= 1
             if (pos + len < 0):
                 pos = offscreenCanvas.width
-                height = random.randint(10,22)
+                height = random.randint(10,12)
                 randomRed = random.randint(0,255)
                 randomBlue = random.randint(0,255)
                 randomGreen = random.randint(0,255)
